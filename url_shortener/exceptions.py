@@ -24,3 +24,15 @@ class RateLimitExceededError(APIException):
     status_code = status.HTTP_429_TOO_MANY_REQUESTS
     default_detail = 'Too many requests, please try again later'
     default_code = 'rate_limit_exceeded'
+
+
+class UnauthorisedError(APIException):
+    status_code = status.HTTP_401_UNAUTHORIZED
+    default_detail = 'Unauthorised short url'
+    default_code = 'unauthorised_short_url'
+
+
+class ForbiddenError(APIException):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = 'You do not have permission to access the short url'
+    default_code = 'permission_denied_for_the_short_url'
