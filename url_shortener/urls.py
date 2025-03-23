@@ -1,6 +1,7 @@
 from django.urls import path
-from . import views
+from .views import URLListCreateAPIView, URLStatsAPIView
 
 urlpatterns = [
-    # Add your app's URL patterns here
+    path('shorten/', URLListCreateAPIView.as_view(), name='url-list-create'),
+    path('stats/<str:short_code>/', URLStatsAPIView.as_view(), name='stats'),
 ]

@@ -56,6 +56,18 @@ DATABASES = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_THROTTLE_CLASSES': [
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/day',
+        'user': '20/day'
+    },
+    'EXCEPTION_HANDLER': 'url_shortener.utils.custom_exception_handler',
+}
+
 LANGUAGE_CODE = "en-us"
 
 TIME_ZONE = "UTC"
