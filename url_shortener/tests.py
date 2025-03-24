@@ -171,7 +171,6 @@ class URLAPITestCase(APITestCase):
         response = self.client.post(reverse('url-list-create'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(response.data['is_private'])
-        self.assertEqual(response.data['username'], 'Anonymous')
 
         # Try to create a private URL as anonymous (should fail)
         data = {
@@ -192,7 +191,6 @@ class URLAPITestCase(APITestCase):
         response = self.client.post(reverse('url-list-create'), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertFalse(response.data['is_private'])
-        self.assertEqual(response.data['username'], 'testuser')
 
         # Create a private URL
         data = {

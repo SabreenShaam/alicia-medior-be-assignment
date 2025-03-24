@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import URLListCreateAPIView, URLStatsAPIView
+from url_shortener.views.create_view import URLListCreateAPIView
+from url_shortener.views.stats_view import URLStatsAPIView
 
 urlpatterns = [
     path('shorten/', URLListCreateAPIView.as_view(), name='url-list-create'),

@@ -1,8 +1,15 @@
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import exception_handler
 from django.http import JsonResponse
 import logging
+from url_shortener.exceptions import RateLimitExceededError
 
 logger = logging.getLogger(__name__)
+
+
+class CustomRateThrottle(AnonRateThrottle):
+    def throttled(self, request, wait):
+        raise RateLimitExceededError(detail=f"Rate limit exceeded. Try again in {wait} seconds.")
 
 
 def custom_exception_handler(exc, context):

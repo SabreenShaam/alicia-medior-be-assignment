@@ -1,26 +1,20 @@
 from rest_framework import serializers
-from .models import URL
+from url_shortener.models import URL
 
 
 class URLSerializer(serializers.ModelSerializer):
     short_url = serializers.SerializerMethodField()
     custom_code = serializers.CharField(write_only=True, required=False)
     is_private = serializers.BooleanField(required=False, default=False)
-    username = serializers.SerializerMethodField()
 
     class Meta:
         model = URL
-        fields = ['id', 'long_url', 'short_url', 'created_at', 'access_count',
-                  'custom_code', 'is_private', 'username']
-        read_only_fields = ['id', 'short_url', 'created_at', 'access_count', 'username']
+        fields = ['long_url', 'short_url', 'is_private', 'custom_code']
 
     def get_short_url(self, obj):
         request = self.context.get('request')
         domain = request.build_absolute_uri('/')[:-1]
         return f"{domain}/short/{obj.short_code}"
-
-    def get_username(self, obj):
-        return obj.user.username if obj.user else "Anonymous"
 
     def create(self, validated_data):
         long_url = validated_data.get('long_url')
