@@ -41,21 +41,6 @@ class URLListCreateAPIView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class URLDetailAPIView(APIView):
-    throttle_classes = [CustomRateThrottle, UserRateThrottle]
-
-    def get_object(self, short_code):
-        try:
-            return get_object_or_404(URL, short_code=short_code)
-        except Http404:
-            raise ShortCodeNotFoundError()
-
-    def get(self, request, short_code):
-        url_obj = self.get_object(short_code)
-        serializer = URLSerializer(url_obj, context={'request': request})
-        return Response(serializer.data)
-
-
 class URLRedirectAPIView(APIView):
     throttle_classes = [CustomRateThrottle, UserRateThrottle]
 
@@ -68,7 +53,7 @@ class URLRedirectAPIView(APIView):
 
             url_obj.access_count += 1
             url_obj.save()
-            return redirect(url_obj.long_url)
+            return redirect(url_obj.long_url, permanent=True)
         except Http404:
             raise ShortCodeNotFoundError()
 
@@ -80,7 +65,6 @@ class URLStatsAPIView(APIView):
         try:
             url_obj = get_object_or_404(URL, short_code=short_code)
             if url_obj.is_private:
-                # if not request.user.is_authenticated or (url_obj.user != request.user and not request.user.is_staff):
                 if url_obj.user != request.user and not request.user.is_superuser:
                     raise ForbiddenError()
             serializer = URLSerializer(url_obj, context={'request': request})

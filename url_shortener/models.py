@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 import hashlib
 import base64
+import string
+import random
 from django.core.validators import URLValidator
 from django.core.exceptions import ValidationError
 
@@ -41,9 +43,9 @@ class URL(models.Model):
                 raise ShortCodeExistsError()
             short_code = custom_code
         else:
-            short_code = cls.generate_short_code(long_url)
+            short_code = cls.generate_short_code()
             while cls.objects.filter(short_code=short_code).exists():
-                short_code = cls.generate_short_code(long_url)
+                short_code = cls.generate_short_code()
 
         return cls.objects.create(
             long_url=long_url,
@@ -53,7 +55,6 @@ class URL(models.Model):
         )
 
     @staticmethod
-    def generate_short_code(long_url, length=6):
-        url_hash = hashlib.md5(long_url.encode()).digest()
-        code = base64.urlsafe_b64encode(url_hash).decode('utf-8').replace('=', '')
-        return code[:length]
+    def generate_short_code(length=6):
+        chars = string.ascii_letters + string.digits
+        return ''.join(random.choice(chars) for _ in range(length))
